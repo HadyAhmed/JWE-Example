@@ -1,15 +1,14 @@
 package com.hadi.jweexample.network
 
 import android.net.ParseException
-import android.os.Build
-import androidx.annotation.RequiresApi
+import com.hadi.jweexample.Constants
 import com.nimbusds.jose.*
 import com.nimbusds.jose.crypto.DirectDecrypter
 import com.nimbusds.jose.crypto.DirectEncrypter
 import org.json.JSONObject
 import java.util.*
 
-class JWEUtils {
+object JWEUtils {
     private fun hexStr2Bytes(hexStr: String): ByteArray {
         var str = hexStr
         str = str.toLowerCase(Locale.ROOT)
@@ -26,9 +25,8 @@ class JWEUtils {
         return bytes
     }
 
-//    @RequiresApi(api = Build.VERSION_CODES.O)
     fun makeEncryptionOfJson(jsonObject: JSONObject): String? {
-        val originalKey: String = "AppConstant.SECRET_KEY"
+        val originalKey = Constants.SECRET_KEY!!
         val header = JWEHeader(
             JWEAlgorithm.DIR,
             EncryptionMethod.A128CBC_HS256,
@@ -63,33 +61,8 @@ class JWEUtils {
         return jweObject.serialize()
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     fun makeDecryptionOfJson(str: String?): String {
-        val originalKey: String = "AppConstant.SECRET_KEY"
-        val header = JWEHeader(
-            JWEAlgorithm.DIR,
-            EncryptionMethod.A128CBC_HS256,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            0,
-            null,
-            null,
-            null,
-            null
-        )
+        val originalKey = Constants.SECRET_KEY!!
         var jweObject2: JWEObject? = null
         try {
             jweObject2 = JWEObject.parse(str)

@@ -1,8 +1,9 @@
 package com.hadi.jweexample
 
+import com.hadi.jweexample.network.JWEUtils
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -11,7 +12,9 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun decryption_test() {
+        val test =
+            JWEUtils.makeDecryptionOfJson("eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..quf6nw8Zs19McW45QHReKA.v5nCYxLkeKaUdCaqX7i9zw.jETKfyNMnMt0L_aDoPWwxA")
+        assertEquals("Test", test)
     }
 }

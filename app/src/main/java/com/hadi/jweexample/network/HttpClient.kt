@@ -4,11 +4,11 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONObject
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 object HttpClient {
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(keyIdHeaderValue: String? = null): OkHttpClient {
 
         val httpLogging = HttpLoggingInterceptor()
         httpLogging.level = HttpLoggingInterceptor.Level.BODY
@@ -18,7 +18,7 @@ object HttpClient {
             .callTimeout(1, TimeUnit.MINUTES)
             .readTimeout(1, TimeUnit.MINUTES)
             .writeTimeout(1, TimeUnit.MINUTES)
-            .addInterceptor(JWEInterceptor())
+            .addInterceptor(JWEInterceptor(keyIdHeaderValue = keyIdHeaderValue))
             .addInterceptor(httpLogging)
 
         return httpClient.build()
@@ -26,14 +26,17 @@ object HttpClient {
 
 }
 
-class JWEInterceptor : Interceptor {
+class JWEInterceptor(private val keyIdHeaderValue: String? = null) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        JWEUtils().makeEncryptionOfJson(JSONObject())
-
         val request = chain.request().newBuilder()
-            .header("Content-Type", "application/json")
-            .header("Accept-Language", "ar")
+            .header("Content-Type", "text/plain")
+            .header("Date", Calendar.getInstance().timeInMillis.toString())
+            .header(
+                "ClientId",
+                "K1g5K3hKR3ZWMG1pVGxLMDNKV2FtQT09WWFsbGFNb2JpbGUyMDIwOVRWb1I5dHBJMFdCTUFnemRlM3NNdz09"
+            )
+        // Add the keyId after first call in the session is done
+        keyIdHeaderValue?.let { request.header("KeyId", it) }
         return chain.proceed(request.build())
     }
-
 }
