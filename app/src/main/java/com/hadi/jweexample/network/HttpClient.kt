@@ -30,7 +30,7 @@ class JWEInterceptor(private val keyIdHeaderValue: String? = null) : Interceptor
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
             .header("Content-Type", "text/plain")
-            .header("Date", Calendar.getInstance().timeInMillis.toString())
+            .header("timestamp", Calendar.getInstance().timeInMillis.toString())
             .header(
                 "ClientId",
                 "K1g5K3hKR3ZWMG1pVGxLMDNKV2FtQT09WWFsbGFNb2JpbGUyMDIwOVRWb1I5dHBJMFdCTUFnemRlM3NNdz09"

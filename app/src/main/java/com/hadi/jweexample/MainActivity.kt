@@ -42,15 +42,13 @@ class MainActivity : AppCompatActivity() {
         val value =
             "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..WHjjVH3UGbYq1Jzwu2Eopg.CubF8zXiA058gBLGDvO0j_27vFZh25pZ9wuLZG5J62ZQ0nHT1N7i-KJOcdgEU05E.MvkJDho7DXLPS6EAM5gPsg"
         // this print in the log Test
-        resultTextView.append("\n")
-        resultTextView.append("Decrypted Hard Coded Value: ${JWEUtils.makeDecryptionOfJson(value)}")
-        resultTextView.append("\n")
+        addLog("Decrypted Hard Coded Value: ${JWEUtils.makeDecryptionOfJson(value)}")
     }
 
     private fun getApiKey() {
         lifecycleScope.launchWhenCreated {
             try {
-                resultTextView.append("Getting Api Key...")
+                addLog("Getting Api Key...")
                 val response = RetrofitClient.retrofitClient().getApiKey()
                 val responseJsonReader = JSONObject(response.string())
                 if (responseJsonReader.getBoolean("Success")) {
@@ -61,24 +59,20 @@ class MainActivity : AppCompatActivity() {
                     Constants.KEY_ID = keyId
                     Constants.SECRET_KEY = secretKey
                     // results on text view
-                    resultTextView.append("\n")
-                    resultTextView.append("Key Id: $keyId")
-                    resultTextView.append("\n")
-                    resultTextView.append("Secret Key $secretKey")
+                    addLog("Key Id: $keyId")
+                    addLog("Secret Key $secretKey")
+                    addLog("-------------------------------------------------------")
                 }
             } catch (ioException: IOException) {
-                resultTextView.append(ioException.message)
+                addLog(ioException.message)
             } catch (exception: HttpException) {
-                resultTextView.append(exception.response()?.errorBody()?.toString())
+                addLog(exception.response()?.errorBody()?.toString())
             }
         }
     }
 
     private fun login() {
-        resultTextView.append("\n")
-        resultTextView.append("Loading")
-        resultTextView.append("\n")
-
+        addLog("Loading")
         lifecycleScope.launch {
             try {
                 val request = JSONObject(
@@ -91,15 +85,18 @@ class MainActivity : AppCompatActivity() {
                 )
                 val response = RetrofitClient.retrofitClient(Constants.KEY_ID)
                     .login(JWEUtils.makeEncryptionOfJson(request)!!).await()
-
-                resultTextView.append("\n")
-                resultTextView.append(response.string())
+                addLog(response.string())
             } catch (ioException: IOException) {
-                resultTextView.append(ioException.message)
+                addLog(ioException.message)
             } catch (exception: HttpException) {
-                resultTextView.append(exception.response()?.toString())
+                addLog(exception.response()?.toString())
             }
-
         }
+    }
+
+    private fun addLog(log: String?) {
+        resultTextView.append("\n")
+        resultTextView.append(log)
+        resultTextView.append("\n")
     }
 }
