@@ -51,7 +51,8 @@ object JWEUtils {
             null,
             null
         )
-        val payload = Payload(jsonObject.toString())
+        val payload =
+            Payload(jsonObject.toString())
         val jweObject = JWEObject(header, payload)
         try {
             jweObject.encrypt(DirectEncrypter(hexStr2Bytes(originalKey)))

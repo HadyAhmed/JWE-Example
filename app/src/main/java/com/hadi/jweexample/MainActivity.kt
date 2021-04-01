@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 val response = RetrofitClient.retrofitClient(Constants.KEY_ID)
                     .login(JWEUtils.makeEncryptionOfJson(request)!!).await()
-                addLog(response.string())
+                addLog("Encrypted Login Success\nHello, ${JSONObject(response.string()).getJSONObject("data").getString("Name")}")
             } catch (ioException: IOException) {
                 addLog(ioException.message)
             } catch (exception: HttpException) {
